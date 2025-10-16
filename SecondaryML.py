@@ -255,3 +255,36 @@ for bar in bars:
              f"{height:.3f}", ha='center', va='bottom')
 
 plt.show()
+# Calculate residuals
+residuals = abs(y_test - y_pred_test)
+
+# Find the outlier index (in original DataFrame)
+outlier_idx = residuals.idxmax()
+
+# See the full original row for the outlier in your dataframe
+outlier_row = df.loc[outlier_idx]
+print(outlier_row)
+import matplotlib.pyplot as plt
+
+outlier_idx = 93
+descriptors = features  # your feature list
+target_col = 'log(So) Water'  # your target column name
+
+# 1. Show outlier descriptors
+print("Outlier descriptor values:")
+print(df.loc[outlier_idx, descriptors])
+
+# 2. Plot histogram for a few key descriptors to visually check extremes
+key_descriptors = ['Cat_MW_RDKit', 'Cat_LogP', 'An_LogP', target_col]
+
+for desc in key_descriptors:
+    plt.figure(figsize=(6,4))
+    plt.hist(df[desc].dropna(), bins=30, alpha=0.7, label='All data')
+    plt.axvline(df.loc[outlier_idx, desc], color='red', linestyle='--', label='Outlier')
+    plt.title(f"Distribution of {desc}")
+    plt.legend()
+    plt.show()
+
+# 3. Check if y (target) for outlier is in unusual range
+print(f"Outlier {target_col}: {df.loc[outlier_idx, target_col]}")
+print(f"Dataset {target_col} range: {df[target_col].min()} - {df[target_col].max()}")
